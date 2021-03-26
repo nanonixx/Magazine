@@ -2,6 +2,7 @@ package Main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import Entities.*;
 
@@ -12,44 +13,63 @@ public class MainMagazine {
         ArrayList<Revista> revistes = new ArrayList();
         FileAccessor fa;
 
+
         Menu menu = new Menu();
-        int opcio;
+        int opcio = -1;
 
-        opcio = menu.menuPral();
+        while (opcio != 0) {
 
-        switch (opcio) {
+            opcio = menu.menuPral();
 
-            case 1:
+            switch (opcio) {
 
-                System.out.println("1!!");
-                fa=new FileAccessor();
-                try {
-                    fa.readAutorsFile("src/main/java/docs/autors.txt");
-                    fa.printAutors();
-                    fa.readMagazinesFile("src/main/java/docs/revistes.txt");
-                    fa.printRevistes();
-                    revistes=fa.readArticlesFile("src/main/java/docs/articles.txt");
-                    mostraRevistes(revistes);
-                } catch (NumberFormatException | IOException e) {
+                case 1:
 
-                    e.printStackTrace();
-                }
-                break;
+                    System.out.println("1!!");
+                    fa = new FileAccessor();
+                    try {
+                        fa.readAutorsFile("src/main/java/docs/autors.txt");
+                        fa.printAutors();
+                        fa.readMagazinesFile("src/main/java/docs/revistes.txt");
+                        fa.printRevistes();
+                        revistes = fa.readArticlesFile("src/main/java/docs/articles.txt");
+                        mostraRevistes(revistes);
+                    } catch (NumberFormatException | IOException e) {
 
-            case 2:
-                System.out.println("2!!");
+                        e.printStackTrace();
+                    }
+                    break;
 
-                break;
+                case 2:
+                    System.out.println("2!!");
+                    System.out.println("SELECCIÓ DE REVISTA");
 
-            default:
-                System.out.println("Adeu!!");
-                System.exit(1);
-                break;
+                    Revista revista = seleccionaRevista(revistes);
+                    if (revista != null) {
+                        System.out.println(revista.toString());
+                    }
 
+                    Article article = null;
+                    if (revista != null) {
+                        article = seleccionaArticle(revista);
+                    }
+
+                    if (article != null) {
+                        System.out.println(article.toString());
+                    }
+
+                    break;
+
+                default:
+                    System.out.println("Adeu!!");
+                    System.exit(1);
+                    break;
+
+            }
         }
-
     }
     public static void mostraRevistes(ArrayList<Revista> revistes){
+
         for (int i = 0; i < revistes.size(); i++) {
 
             System.out.println(revistes.get(i).toString());
@@ -62,13 +82,35 @@ public class MainMagazine {
     }
 
     public static Revista seleccionaRevista(ArrayList<Revista> revistes){
-        //TODO
+        Scanner sc = new Scanner(System.in);
+
+        mostraRevistes(revistes);
+        System.out.println("Selecciona un id de revista");
+        int id = sc.nextInt();
+
+
+        for (Revista r : revistes ) {
+            if (id == r.getId_revista()){
+                return r;
+            }
+        }
 
         return null;
 
     }
-    public static Article seleccionaArticle(ArrayList<Revista> revista){
-        //TODO
+    public static Article seleccionaArticle(Revista revista){
+        Scanner sc = new Scanner(System.in);
+        String articles = revista.getArticles().toString();
+
+        System.out.println(articles);
+        System.out.println("Selecciona un id d'article");
+
+        int id = sc.nextInt();
+
+        for (Article a: revista.getArticles()) {
+            if (id == a.getId_article())
+                return a;
+        }
 
         return null;
 
